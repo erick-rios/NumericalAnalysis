@@ -9,7 +9,9 @@
 \usepackage{graphicx}
 \usepackage{lmodern}
 \usepackage{stackrel}
+\usepackage{listings}
 \usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\lstset{language=Python, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, commentstyle=\color{gray}, stringstyle=\color{green}}
 \title{Temas Selectos de Análisis Numérico\\Práctica 2, parte teórica}
 \author{Dra. Úrsula Iturrarán Viveros}
 \date{Semestre 2025-1}
@@ -25,61 +27,105 @@ y'(t) = -y-2t-1,\quad 0\leq t\leq 1,\quad y(0) = 2 \label{eq-1}
 
 \subparagraph*{Solución.}
 
-El método de Euler explícito se define como:
+\paragraph*{Ejercicio 1.} Considera el problema de valor inicial:
+\begin{equation}
+y'(t) = -y - 2t - 1, \quad 0 \leq t \leq 1, \quad y(0) = 2 \label{eq-1}
+\end{equation}
+
+\noindent con solución exacta \( y(t) = e^{-t} - 2t + 1 \). Encuentra el valor del espaciamiento \( h \) que produce al menos dos dígitos decimales de precisión en \( t = 1 \), usando el método de Euler explícito.
+
+\subparagraph*{Solución.}
+Primero, recordemos que el método de Euler explícito se define como:
 \[
 y_{n+1} = y_n + h f(t_n, y_n),
 \]
-donde $f(t, y) = -y - 2t - 1$. La condición inicial es $y(0) = 2$.
+donde \( f(t, y) = -y - 2t - 1 \) en nuestro caso.
 
-\textbf{Paso 1: Calcular $f(t, y)$}
+Dividimos el intervalo \( [0, 1] \) en \( N \) subintervalos de tamaño \( h = \frac{1}{N} \), con puntos \( t_n = nh \), para \( n = 0, 1, \dots, N \). El valor inicial es \( y(0) = 2 \).
+
+Utilizamos un código de python que se anexa en los archivos adjuntos para encontrar el valor de \( h \) que produce al menos dos dígitos decimales de precisión en \( t = 1 \).
+El objetivo es encontrar un valor de \( h \) que asegure al menos dos dígitos decimales de precisión en \( t = 1 \). Para esto, necesitamos comparar la solución numérica \( y_N \) obtenida con el método de Euler en \( t = 1 \), es decir, cuando \( N = \frac{1}{h} \), con la solución exacta \( y(1) = e^{-1} - 2(1) + 1 \).
+
+La solución exacta en \( t = 1 \) es:
 \[
-f(t, y) = -y - 2t - 1.
+y(1) = e^{-1} - 2 + 1 = \frac{1}{e} - 1.
 \]
-Para cada iteración del método de Euler, tenemos:
+Aproximadamente:
 \[
-y_{n+1} = y_n + h(-y_n - 2t_n - 1).
+y(1) \approx 0.36788 - 1 = -0.63212.
 \]
 
-\textbf{Paso 2: Iteraciones}
-
-Iteramos el método de Euler para $t \in [0, 1]$ con diferentes valores de $h$. Dividimos el intervalo en $N$ subintervalos de longitud $h = \frac{1}{N}$.
-
-\textbf{Paso 3: Encontrar el $h$ adecuado}
-
-La solución exacta en $t=1$ es:
+Para obtener una aproximación numérica usando el método de Euler explícito, el proceso iterativo es el siguiente:
 \[
-y(1) = e^{-1} - 2(1) + 1 \approx -0.6321.
+y_{n+1} = y_n + h (-y_n - 2t_n - 1).
 \]
-Iteramos el método hasta obtener una aproximación con al menos dos dígitos decimales de precisión.
+
+Aproximamos el valor de \( y(1) \) para diferentes valores de \( h \), comparando la solución numérica con la exacta.
+
+ Obtuvimos que los siguientes valores de \( h \) producen al menos dos dígitos decimales de precis:
+ \begin{itemize}
+    \item h = 0.1, Aproximación en t=1: -0.6513215599000002, Error: 0.019201001071442514
+    \item h = 0.05, Aproximación en t=1: -0.6415140775914578, Error: 0.009393518762900177
+    \item h = 0.01, Aproximación en t=1: -0.633967658726771, Error: 0.0018470998982133002
+    
+ \end{itemize}
+
+ Podemos ver que con \( h = 0.01 \) se obtiene una aproximación con al menos dos dígitos decimales de precisión en \( t = 1 \).
+
 
 \paragraph*{Ejercicio 2.} Encuentra una cota para el error local de truncamiento para el método de Euler explícito aplicado al problema de valor inicial:
-\begin{equation}
-y'(t) = 2ty,\quad y(1) = 1 \label{eq-2}
-\end{equation}
-
-\noindent con solución exacta $y(t)=e^{t^2-1}$.
-
-\subparagraph*{Solución.}
-
-La cota del error local de truncamiento para el método de Euler está dada por:
 \[
-T_n = \frac{h^2}{2} y''(\xi),
+y'(t) = 2ty,\quad y(1) = 1
 \]
-donde $\xi \in [t_n, t_{n+1}]$ es un punto intermedio.
+con solución exacta \(y(t)=e^{t^2-1}\).
 
-\textbf{Paso 1: Derivar $y(t)$}
-
-Sabemos que $y(t) = e^{t^2 - 1}$. Derivamos para obtener $y''(t)$:
+\subparagraph*{Solución.} Para el problema de valor inicial dado, se tiene la ecuación diferencial 
 \[
-y''(t) = 2e^{t^2 - 1} + 4t^2 e^{t^2 - 1}.
+y'(t) = 2ty,\quad y(1) = 1.
 \]
-
-\textbf{Paso 2: Sustituir en el error local}
-
-La cota del error local es:
+Sabemos que el método de Euler explícito tiene la forma:
 \[
-T_n \approx \frac{h^2}{2} \left( 2e^{\xi^2 - 1} + 4\xi^2 e^{\xi^2 - 1} \right).
+y_{n+1} = y_n + h f(t_n, y_n),
 \]
+donde \(f(t, y) = 2ty\), con paso \(h\), y puntos de malla \(t_n = nh\), para \(n = 0, 1, 2, \dots\).
+
+
+El error local de truncamiento \( \tau_n \) se define como la diferencia entre la solución exacta \( y(t_{n+1}) \) y un paso del método de Euler, evaluado en el punto \( t_n \):
+\[
+\tau_n = y(t_{n+1}) - y(t_n) - h f(t_n, y(t_n)).
+\]
+Aplicando la expansión de Taylor de \(y(t_{n+1})\) alrededor de \(t_n\):
+\[
+y(t_{n+1}) = y(t_n) + h y'(t_n) + \frac{h^2}{2} y''(t_n) + O(h^3).
+\]
+Sustituyendo la ecuación diferencial \(y'(t) = 2ty(t)\) en la expansión, obtenemos:
+\[
+y(t_{n+1}) = y(t_n) + h (2t_n y(t_n)) + \frac{h^2}{2} y''(t_n) + O(h^3).
+\]
+Para calcular \(y''(t)\), diferenciamos nuevamente la ecuación \(y'(t) = 2ty(t)\):
+\[
+y''(t) = 2y(t) + 2t y'(t) = 2y(t) + 2t (2ty(t)) = 2(1 + 2t^2) y(t).
+\]
+Sustituyendo en la expansión de \(y(t_{n+1})\), obtenemos:
+\[
+y(t_{n+1}) = y(t_n) + h (2t_n y(t_n)) + \frac{h^2}{2} (2(1 + 2t_n^2) y(t_n)) + O(h^3).
+\]
+El método de Euler explícito nos da:
+\[
+y_{n+1} = y_n + h(2t_n y_n).
+\]
+Entonces, el error local de truncamiento es:
+\[
+\tau_n = \frac{h^2}{2} (2(1 + 2t_n^2) y(t_n)) + O(h^3).
+\]
+Por lo tanto, una cota para el error local de truncamiento es:
+\[
+|\tau_n| \leq Ch^2,
+\]
+donde \(C = \max_{t \in [0, T]} |2(1 + 2t^2) y(t)|\).
+
+El error local de truncamiento del método de Euler explícito es del orden de \(O(h^2)\), es decir, el error disminuye cuadráticamente con respecto al tamaño del paso \(h\). Esto nos proporciona una estimación de la precisión que podemos esperar al aplicar este método para aproximar la solución del problema de valor inicial.
+
 
 \paragraph*{Ejercicio 3.} Deduce las ecuaciones en diferencias correspondientes al método de Taylor de orden dos para los siguientes problemas de valor inicial:
 \begin{itemize}
@@ -87,7 +133,56 @@ T_n \approx \frac{h^2}{2} \left( 2e^{\xi^2 - 1} + 4\xi^2 e^{\xi^2 - 1} \right).
     \item[b)] $y'=3(t-1)^2,\quad 0\leq t\leq 1,\quad y(0)=1$
 \end{itemize}
 
-\subparagraph*{Solución.}
+\subparagraph*{Solución.} El método de Taylor de orden dos tiene la siguiente forma general:
+\[
+y_{n+1} = y_n + h f(t_n, y_n) + \frac{h^2}{2} f_t'(t_n, y_n),
+\]
+donde \( f_t'(t_n, y_n) \) es la derivada total de \( f(t, y) \) con respecto a \( t \).
+
+
+\begin{itemize}
+    \item Consideremos el problema de valor inicial:
+    \[
+    y' = -2t y^2,\quad 0\leq t\leq 1,\quad y(0) = 1.
+    \]
+    Para aplicar el método de Taylor de orden dos, primero identificamos la función \( f(t, y) = -2t y^2 \). Luego, calculamos la derivada de \( f(t, y) \) con respecto a \( t \):
+    
+    \[
+    f_t'(t, y) = \frac{\partial}{\partial t}(-2t y^2) = -2y^2.
+    \]
+    
+    Por lo tanto, la ecuación en diferencias del método de Taylor de orden dos es:
+    \[
+    y_{n+1} = y_n + h (-2t_n y_n^2) + \frac{h^2}{2} (-2y_n^2),
+    \]
+    es decir,
+    \[
+    y_{n+1} = y_n - 2h t_n y_n^2 - h^2 y_n^2.
+    \]
+    
+    
+    \item Ahora consideremos el segundo problema de valor inicial:
+    \[
+    y' = 3(t-1)^2,\quad 0\leq t\leq 1,\quad y(0) = 1.
+    \]
+    Aquí, \( f(t, y) = 3(t-1)^2 \). La derivada de \( f(t, y) \) con respecto a \( t \) es:
+    
+    \[
+    f_t'(t, y) = \frac{\partial}{\partial t} \left(3(t-1)^2 \right) = 6(t-1).
+    \]
+    
+    Aplicando el método de Taylor de orden dos, la ecuación en diferencias es:
+    \[
+    y_{n+1} = y_n + h 3(t_n - 1)^2 + \frac{h^2}{2} 6(t_n - 1),
+    \]
+    o simplificando:
+    \[
+    y_{n+1} = y_n + 3h (t_n - 1)^2 + 3h^2 (t_n - 1).
+    \]
+\end{itemize}
+
+Hemos deducido las ecuaciones en diferencias para ambos problemas utilizando el método de Taylor de orden dos. Las fórmulas obtenidas nos permiten aproximar las soluciones numéricas de estos problemas de valor inicial.
+
 
 El método de Taylor de orden dos es:
 \[
@@ -96,7 +191,6 @@ y_{n+1} = y_n + h y'(t_n, y_n) + \frac{h^2}{2} y''(t_n, y_n).
 
 \textbf{Parte (a): $y'=-2ty^2$}
 
-\textbf{Paso 1: Calcular $y''$}
 
 Derivamos $y' = -2ty^2$:
 \[
@@ -112,35 +206,70 @@ y'' = 6(t-1).
 \]
 
 \paragraph*{Ejercicio 4.} Obtén las iteraciones de Picard para el problema de valor inicial
-\begin{equation}
-y'(t) = 2t(y+1),\quad y(0)=0 \label{eq-3}
-\end{equation}
-
-\noindent y demuestra que convergen a la solución $y(t)=e^{t^2}-1$.
-
-\subparagraph*{Solución.}
-
-Las iteraciones de Picard se definen por:
 \[
-y_{n+1}(t) = y_0 + \int_0^t f(s, y_n(s)) ds,
+y'(t) = 2t(y+1),\quad y(0)=0
 \]
-donde $f(t, y) = 2t(y+1)$.
+y demuestra que convergen a la solución \(y(t)=e^{t^2}-1\).
 
-\textbf{Primera iteración:}
+\subparagraph*{Solución.} El método de iteración de Picard para resolver ecuaciones diferenciales consiste en construir sucesivas aproximaciones de la solución mediante la integral de la ecuación diferencial.
 
+Dado el problema de valor inicial
 \[
-y_1(t) = \int_0^t 2s(0+1) ds = t^2.
+y'(t) = 2t(y + 1), \quad y(0) = 0,
 \]
-
-\textbf{Segunda iteración:}
-
+primero integramos ambos lados:
 \[
-y_2(t) = \int_0^t 2s(t^2+1) ds = t^2 + \frac{t^4}{2}.
+y(t) = y(0) + \int_0^t 2s(y(s) + 1)\,ds.
+\]
+Sustituyendo el valor inicial \(y(0) = 0\), obtenemos la siguiente forma iterativa:
+\[
+y_{n+1}(t) = \int_0^t 2s(y_n(s) + 1)\,ds.
 \]
 
-Iteramos hasta que las soluciones convergen a $y(t) = e^{t^2} - 1$.
+Ahora realizamos las primeras iteraciones de Picard.
 
-\paragraph*{Ejercicio 5.} Consideremos la ecuación diferencial $y'(t) = f(t)$. Demuestra que el método de Runge-Kutta de orden 4 se reduce a la regla de Simpson:
+Primera iteración (\(y_0(t)\)):
+Comenzamos con la aproximación inicial \(y_0(t) = 0\). Sustituyendo en la fórmula iterativa, obtenemos:
+\[
+y_1(t) = \int_0^t 2s(0 + 1)\,ds = \int_0^t 2s\,ds = t^2.
+\]
+
+Segunda iteración (\(y_1(t) = t^2\)):
+Sustituyendo \(y_1(t) = t^2\) en la fórmula, obtenemos:
+\[
+y_2(t) = \int_0^t 2s(t^2 + 1)\,ds = \int_0^t 2s(s^2 + 1)\,ds.
+\]
+Resolvamos esta integral:
+\[
+y_2(t) = \int_0^t 2s^3\,ds + \int_0^t 2s\,ds = \left[ \frac{s^4}{2} \right]_0^t + \left[ s^2 \right]_0^t = \frac{t^4}{2} + t^2.
+\]
+
+Tercera iteración (\(y_2(t) = \frac{t^4}{2} + t^2\)):
+Sustituyendo \(y_2(t)\) en la fórmula, obtenemos:
+\[
+y_3(t) = \int_0^t 2s\left( \frac{s^4}{2} + s^2 + 1 \right)\,ds.
+\]
+Resolvamos esta integral:
+\[
+y_3(t) = \int_0^t \left( s^5 + 2s^3 + 2s \right)\,ds = \left[ \frac{s^6}{6} + \frac{s^4}{2} + s^2 \right]_0^t = \frac{t^6}{6} + \frac{t^4}{2} + t^2.
+\]
+
+
+
+Observamos un patrón en las iteraciones. Las funciones \(y_n(t)\) se parecen cada vez más a la serie de Taylor de la función \(e^{t^2} - 1\), cuya expansión es:
+\[
+e^{t^2} - 1 = t^2 + \frac{t^4}{2} + \frac{t^6}{6} + \dots.
+\]
+Por lo tanto, las iteraciones de Picard convergen a la solución exacta:
+\[
+y(t) = e^{t^2} - 1.
+\]
+
+Las iteraciones de Picard para el problema de valor inicial dado convergen a la solución exacta \(y(t) = e^{t^2} - 1\), como hemos verificado mediante la expansión de las primeras iteraciones.
+
+
+
+\paragraph*{Ejercicio 5.} Consideremos la ecuación diferencial \( y'(t) = f(t) \). Demuestra que el método de Runge-Kutta de orden 4 se reduce a la regla de Simpson:
 \[
 \begin{array}{ccl}
 \int_{t_n}^{t_n+h}f(t)dt &=& y_{n+1} - y_n \\
@@ -149,16 +278,60 @@ Iteramos hasta que las soluciones convergen a $y(t) = e^{t^2} - 1$.
 \]
 
 \subparagraph*{Solución.}
-
-El método de Runge-Kutta de orden 4 calcula:
+Primero, recordemos que el método de Runge-Kutta de orden 4 para una ecuación diferencial de la forma \( y'(t) = f(t) \) se define por las siguientes fórmulas:
 \[
-k_1 = f(t_n),\quad k_2 = f(t_n + \frac{h}{2}),\quad k_3 = f(t_n + \frac{h}{2}),\quad k_4 = f(t_n + h).
+k_1 = f(t_n),
 \]
-La fórmula de Runge-Kutta es:
+\[
+k_2 = f\left(t_n + \frac{h}{2}, y_n + \frac{h}{2} k_1\right),
+\]
+\[
+k_3 = f\left(t_n + \frac{h}{2}, y_n + \frac{h}{2} k_2\right),
+\]
+\[
+k_4 = f\left(t_n + h, y_n + h k_3\right),
+\]
+y la aproximación de \(y_{n+1}\) está dada por:
 \[
 y_{n+1} = y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4).
 \]
-Esto se puede reescribir como una cuadratura de Simpson para la integral de $f(t)$.
+
+Dado que la ecuación diferencial que nos ocupa es de la forma \(y'(t) = f(t)\), la solución exacta de \(y(t)\) en el intervalo \([t_n, t_n + h]\) se puede escribir como:
+\[
+y_{n+1} = y_n + \int_{t_n}^{t_n + h} f(t) \, dt.
+\]
+
+Nuestro objetivo es demostrar que el método de Runge-Kutta de orden 4 se reduce a la regla de Simpson cuando se integra \(f(t)\) en el intervalo \([t_n, t_n + h]\). Para ello, analizamos las fórmulas de \(k_1\), \(k_2\), \(k_3\) y \(k_4\).
+
+Dado que \(y'(t) = f(t)\), obtenemos:
+\[
+k_1 = f(t_n),
+\]
+\[
+k_2 = f\left(t_n + \frac{h}{2}\right), \quad \text{(ya que \( y_n + \frac{h}{2} k_1 \) es irrelevante en esta forma)}
+\]
+\[
+k_3 = f\left(t_n + \frac{h}{2}\right),
+\]
+\[
+k_4 = f(t_n + h).
+\]
+
+Sustituyendo estas expresiones en la fórmula de Runge-Kutta, obtenemos:
+\[
+y_{n+1} = y_n + \frac{h}{6}\left(f(t_n) + 2f\left(t_n + \frac{h}{2}\right) + 2f\left(t_n + \frac{h}{2}\right) + f(t_n + h)\right).
+\]
+Simplificando:
+\[
+y_{n+1} = y_n + \frac{h}{6}\left(f(t_n) + 4f\left(t_n + \frac{h}{2}\right) + f(t_n + h)\right).
+\]
+
+Esto es precisamente la fórmula de la regla de Simpson para la aproximación de la integral de \(f(t)\) en el intervalo \([t_n, t_n + h]\):
+\[
+\int_{t_n}^{t_n + h} f(t) \, dt \approx \frac{h}{6} \left(f(t_n) + 4f\left(t_n + \frac{h}{2}\right) + f(t_n + h)\right).
+\]
+
+Por lo tanto, hemos demostrado que el método de Runge-Kutta de orden 4 se reduce a la regla de Simpson para la aproximación de la integral de \(f(t)\).
 
 \paragraph*{Ejercicio 6.} Muestra que la solución del problema de valor inicial
 \[
@@ -171,19 +344,48 @@ y(t)=\int_0^te^{-x^2}dx.
 Usa el método de Runge-Kutta de orden 4 para aproximar el valor de $y(1)=\int_0^1e^{-x^2}dx$.
 
 \subparagraph*{Solución.}
-
-La solución es:
+Primero, observemos que el problema de valor inicial dado es
+\[
+y' = e^{-t^2}, \quad y(0) = 0.
+\]
+Sabemos que la derivada de \(y(t)\) es \(e^{-t^2}\), por lo tanto, para encontrar la función \(y(t)\), integramos ambos lados con respecto a \(t\):
+\[
+y(t) = \int_0^t e^{-x^2} dx + C.
+\]
+Dado que \(y(0) = 0\), podemos encontrar la constante de integración \(C\). Evaluando la integral en \(t = 0\):
+\[
+y(0) = \int_0^0 e^{-x^2} dx + C = 0 + C = 0,
+\]
+lo que implica que \(C = 0\). Así, la solución del problema de valor inicial es:
 \[
 y(t) = \int_0^t e^{-x^2} dx.
 \]
 
-Para aproximar $y(1)$, aplicamos el método de Runge-Kutta de orden 4 con $f(t) = e^{-t^2}$. Calculamos las siguientes etapas:
+Ahora, utilizaremos el método de Runge-Kutta de orden 4 para aproximar el valor de \(y(1) = \int_0^1 e^{-x^2} dx\).
+
+Sea el problema de valor inicial
 \[
-k_1 = e^{-t_n^2},\quad k_2 = e^{-\left(t_n + \frac{h}{2}\right)^2},\quad k_3 = e^{-\left(t_n + \frac{h}{2}\right)^2},\quad k_4 = e^{-\left(t_n + h\right)^2}.
+y' = e^{-t^2}, \quad y(0) = 0.
 \]
-Luego, aplicamos la fórmula:
+Dividimos el intervalo \([0,1]\) en \(N\) subintervalos de tamaño \(h = \frac{1}{N}\) y aplicamos el método de Runge-Kutta de orden 4. Las fórmulas para el método son las siguientes:
 \[
-y_{n+1} = y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4).
+k_1 = f(t_n, y_n),
 \]
+\[
+k_2 = f\left(t_n + \frac{h}{2}, y_n + \frac{h}{2} k_1\right),
+\]
+\[
+k_3 = f\left(t_n + \frac{h}{2}, y_n + \frac{h}{2} k_2\right),
+\]
+\[
+k_4 = f\left(t_n + h, y_n + h k_3\right),
+\]
+\[
+y_{n+1} = y_n + \frac{h}{6} (k_1 + 2k_2 + 2k_3 + k_4),
+\]
+donde \(f(t, y) = e^{-t^2}\).
+
+Aproximamos \(y(1)\) usando \(N = 10\) subintervalos.
+
 
 \end{document}
