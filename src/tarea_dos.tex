@@ -17,7 +17,11 @@
 \date{Semestre 2025-1}
 \begin{document}
 \maketitle
-
+\textbf{Nombres}:
+\begin{itemize}
+    \item Pablo Rogelio Ramírez Alferes
+    \item Erick Jesús Ríos González
+\end{itemize}
 \paragraph*{Ejercicio 1.} Considera el problema de valor inicial:
 \begin{equation}
 y'(t) = -y-2t-1,\quad 0\leq t\leq 1,\quad y(0) = 2 \label{eq-1}
@@ -27,14 +31,6 @@ y'(t) = -y-2t-1,\quad 0\leq t\leq 1,\quad y(0) = 2 \label{eq-1}
 
 \subparagraph*{Solución.}
 
-\paragraph*{Ejercicio 1.} Considera el problema de valor inicial:
-\begin{equation}
-y'(t) = -y - 2t - 1, \quad 0 \leq t \leq 1, \quad y(0) = 2 \label{eq-1}
-\end{equation}
-
-\noindent con solución exacta \( y(t) = e^{-t} - 2t + 1 \). Encuentra el valor del espaciamiento \( h \) que produce al menos dos dígitos decimales de precisión en \( t = 1 \), usando el método de Euler explícito.
-
-\subparagraph*{Solución.}
 Primero, recordemos que el método de Euler explícito se define como:
 \[
 y_{n+1} = y_n + h f(t_n, y_n),
@@ -63,69 +59,77 @@ y_{n+1} = y_n + h (-y_n - 2t_n - 1).
 Aproximamos el valor de \( y(1) \) para diferentes valores de \( h \), comparando la solución numérica con la exacta.
 
  Obtuvimos que los siguientes valores de \( h \) producen al menos dos dígitos decimales de precis:
- \begin{itemize}
-    \item h = 0.1, Aproximación en t=1: -0.6513215599000002, Error: 0.019201001071442514
-    \item h = 0.05, Aproximación en t=1: -0.6415140775914578, Error: 0.009393518762900177
-    \item h = 0.01, Aproximación en t=1: -0.633967658726771, Error: 0.0018470998982133002
-    
- \end{itemize}
+ \begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{h} & \textbf{Aproximación en t=1} & \textbf{Error} \\ \hline
+    0.1 & -0.6513215599000002 & 0.019201001071442514 \\ \hline
+    0.05 & -0.6415140775914578 & 0.009393518762900177 \\ \hline
+    0.01 & -0.633967658726771 & 0.0018470998982133002 \\ \hline
+    \end{tabular}
+    \caption{Resultados de la aproximación y error en t=1 para diferentes valores de h.}
+    \end{table}
 
- Podemos ver que con \( h = 0.01 \) se obtiene una aproximación con al menos dos dígitos decimales de precisión en \( t = 1 \).
-
-
-\paragraph*{Ejercicio 2.} Encuentra una cota para el error local de truncamiento para el método de Euler explícito aplicado al problema de valor inicial:
-\[
-y'(t) = 2ty,\quad y(1) = 1
-\]
-con solución exacta \(y(t)=e^{t^2-1}\).
-
-\subparagraph*{Solución.} Para el problema de valor inicial dado, se tiene la ecuación diferencial 
-\[
-y'(t) = 2ty,\quad y(1) = 1.
-\]
-Sabemos que el método de Euler explícito tiene la forma:
-\[
-y_{n+1} = y_n + h f(t_n, y_n),
-\]
-donde \(f(t, y) = 2ty\), con paso \(h\), y puntos de malla \(t_n = nh\), para \(n = 0, 1, 2, \dots\).
+ Podemos ver que con \( h = 0.01 \) se obtiene una aproximación con al menos dos dígitos decimales de precisión en \( t = 1 \). Se puede justificar el porqué 0.01 sirve en este caso, recordemos que el método de Euler explícito es de orden 1, es decir que el orden de truncamiento local es menor a $Ch^2$, entonces veamos que tener dos dígitos de diferencia es equivalente a pedir que $\tau_n<\frac{1}{100}$, con nuestra aproximación tenemos que $\tau_n<Ch^2<\frac{1}{100}$, vemos que $\left(\frac{1}{100}\right)^2<\frac{1}{100}$, según nuestras aproximaciones tenemos que $C\approx0.1$, lo cual hace que $Ch^2<h^2<h$, lo cual es lo que queremos.
 
 
-El error local de truncamiento \( \tau_n \) se define como la diferencia entre la solución exacta \( y(t_{n+1}) \) y un paso del método de Euler, evaluado en el punto \( t_n \):
-\[
-\tau_n = y(t_{n+1}) - y(t_n) - h f(t_n, y(t_n)).
-\]
-Aplicando la expansión de Taylor de \(y(t_{n+1})\) alrededor de \(t_n\):
-\[
-y(t_{n+1}) = y(t_n) + h y'(t_n) + \frac{h^2}{2} y''(t_n) + O(h^3).
-\]
-Sustituyendo la ecuación diferencial \(y'(t) = 2ty(t)\) en la expansión, obtenemos:
-\[
-y(t_{n+1}) = y(t_n) + h (2t_n y(t_n)) + \frac{h^2}{2} y''(t_n) + O(h^3).
-\]
-Para calcular \(y''(t)\), diferenciamos nuevamente la ecuación \(y'(t) = 2ty(t)\):
-\[
-y''(t) = 2y(t) + 2t y'(t) = 2y(t) + 2t (2ty(t)) = 2(1 + 2t^2) y(t).
-\]
-Sustituyendo en la expansión de \(y(t_{n+1})\), obtenemos:
-\[
-y(t_{n+1}) = y(t_n) + h (2t_n y(t_n)) + \frac{h^2}{2} (2(1 + 2t_n^2) y(t_n)) + O(h^3).
-\]
-El método de Euler explícito nos da:
-\[
-y_{n+1} = y_n + h(2t_n y_n).
-\]
-Entonces, el error local de truncamiento es:
-\[
-\tau_n = \frac{h^2}{2} (2(1 + 2t_n^2) y(t_n)) + O(h^3).
-\]
-Por lo tanto, una cota para el error local de truncamiento es:
-\[
-|\tau_n| \leq Ch^2,
-\]
-donde \(C = \max_{t \in [0, T]} |2(1 + 2t^2) y(t)|\).
-
-El error local de truncamiento del método de Euler explícito es del orden de \(O(h^2)\), es decir, el error disminuye cuadráticamente con respecto al tamaño del paso \(h\). Esto nos proporciona una estimación de la precisión que podemos esperar al aplicar este método para aproximar la solución del problema de valor inicial.
-
+ \paragraph*{Ejercicio 2.} Encuentra una cota para el error local de truncamiento para el método de Euler explícito aplicado al problema de valor inicial:
+ \[
+ y'(t) = 2ty,\quad y(1) = 1
+ \]
+ con solución exacta \(y(t)=e^{t^2-1}\).
+ 
+ \subparagraph*{Solución.} Para el problema de valor inicial dado, se tiene la ecuación diferencial 
+ \[
+ y'(t) = 2ty,\quad y(1) = 1.
+ \]
+ Sabemos que el método de Euler explícito tiene la forma:
+ \[
+ y_{n+1} = y_n + h f(t_n, y_n),
+ \]
+ donde \(f(t, y) = 2ty\), con paso \(h\), y puntos de malla \(t_n = nh\), para \(n = 0, 1, 2, \dots\).
+ 
+ El error local de truncamiento \( \tau_n \) se define como la diferencia entre la solución exacta \( y(t_{n+1}) \) y un paso del método de Euler, evaluado en el punto \( t_n \):
+ \[
+ \tau_n = y(t_{n+1}) - y(t_n) - h f(t_n, y(t_n)).
+ \]
+ Aplicando la expansión de Taylor de \(y(t_{n+1})\) alrededor de \(t_n\):
+ \[
+ y(t_{n+1}) = y(t_n) + h y'(t_n) + \frac{h^2}{2} y''(t_n) + O(h^3).
+ \]
+ Sustituyendo la ecuación diferencial \(y'(t) = 2ty(t)\) en la expansión, obtenemos:
+ \[
+ y(t_{n+1}) = y(t_n) + h (2t_n y(t_n)) + \frac{h^2}{2} y''(t_n) + O(h^3).
+ \]
+ Para calcular \(y''(t)\), diferenciamos nuevamente la ecuación \(y'(t) = 2ty(t)\):
+ \[
+ y''(t) = 2y(t) + 2t y'(t) = 2y(t) + 2t (2ty(t)) = 2(1 + 2t^2) y(t).
+ \]
+ Sustituyendo en la expansión de \(y(t_{n+1})\), obtenemos:
+ \[
+ y(t_{n+1}) = y(t_n) + h (2t_n y(t_n)) + \frac{h^2}{2} (2(1 + 2t_n^2) y(t_n)) + O(h^3).
+ \]
+ El método de Euler explícito nos da:
+ \[
+ y_{n+1} = y_n + h(2t_n y_n).
+ \]
+ Entonces, el error local de truncamiento es:
+ \[
+ \tau_n = \frac{h^2}{2} (2(1 + 2t_n^2) y(t_n)) + O(h^3).
+ \]
+ Para encontrar una cota del error, podemos observar que la función \(2(1 + 2t^2)y(t)\) es continua y acotada en el intervalo de integración considerado. Denotando \( M = \max_{t \in [0, T]} |2(1 + 2t^2) y(t)| \), obtenemos la siguiente cota para el error local de truncamiento:
+ \[
+ |\tau_n| \leq M \frac{h^2}{2} + O(h^3).
+ \]
+ Así, una cota para el error local de truncamiento es:
+ \[
+ |\tau_n| \leq C h^2,
+ \]
+ donde \(C = \frac{M}{2}\) es una constante que no depende de \(t_n\) ni de \(h\).
+ 
+ Por lo tanto, el error local de truncamiento del método de Euler explícito es del orden de \(O(h^2)\), es decir, el error disminuye cuadráticamente con respecto al tamaño del paso \(h\), como se esperaba.
+ 
 
 \paragraph*{Ejercicio 3.} Deduce las ecuaciones en diferencias correspondientes al método de Taylor de orden dos para los siguientes problemas de valor inicial:
 \begin{itemize}
@@ -256,7 +260,18 @@ y_3(t) = \int_0^t \left( s^5 + 2s^3 + 2s \right)\,ds = \left[ \frac{s^6}{6} + \f
 
 
 
-Observamos un patrón en las iteraciones. Las funciones \(y_n(t)\) se parecen cada vez más a la serie de Taylor de la función \(e^{t^2} - 1\), cuya expansión es:
+Observamos un patrón en las iteraciones, veamos que las iteraciones parecen seguir la ecuación $y_n(t)=\sum_{i=1}^n\frac{t^{2i}}{i!}$, demostrémoslo por inducción.
+\begin{description}
+    \item[Caso base ($n=1$)] Ya demostrado en el cálculo de la primera iteración.
+    \item[Hipótesis de inducción $(k\implies k+1)$] Supongamos para una $k\in\mathbb{N}$ tenemos que $y_k(t)=\sum_{i=1}^k \frac{t^{2i}}{i!}$, entonces veamos que:
+    \begin{align*}
+        y_{k+1}(t)&=\int_0^t2s\left(\sum_{i=1}^n \frac{s^{2i}}{i!}+1\right)\,ds\\
+        &=\int_0^t2\sum_{i=1}^n\frac{s^{2i+1}}{i!}\,ds+\int_0^22s\,ds\\
+        &=2\left(\sum_{i=1}^n\frac{t^{2(i+1)}}{2i!(i+1)}\right)+t^2\\
+        &=\sum_{i=1}^{n+1}\frac{t^{2i}}{i!}
+    \end{align*}
+\end{description}
+Las funciones \(y_n(t)\) se parecen cada vez más a la serie de Taylor de la función \(e^{t^2} - 1\), cuya expansión es:
 \[
 e^{t^2} - 1 = t^2 + \frac{t^4}{2} + \frac{t^6}{6} + \dots.
 \]
@@ -265,8 +280,7 @@ Por lo tanto, las iteraciones de Picard convergen a la solución exacta:
 y(t) = e^{t^2} - 1.
 \]
 
-Las iteraciones de Picard para el problema de valor inicial dado convergen a la solución exacta \(y(t) = e^{t^2} - 1\), como hemos verificado mediante la expansión de las primeras iteraciones.
-
+Las iteraciones de Picard para el problema de valor inicial dado convergen a la solución exacta \(y(t) = e^{t^2} - 1\), como hemos verificado mediante la expansión de las primeras iteraciones y la demostración por inducción.
 
 
 \paragraph*{Ejercicio 5.} Consideremos la ecuación diferencial \( y'(t) = f(t) \). Demuestra que el método de Runge-Kutta de orden 4 se reduce a la regla de Simpson:
