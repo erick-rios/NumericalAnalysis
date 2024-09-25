@@ -9,9 +9,19 @@
 \usepackage{graphicx}
 \usepackage{lmodern}
 \usepackage{stackrel}
+\usepackage{xcolor}
 \usepackage{listings}
 \usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
-\lstset{language=Python, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, commentstyle=\color{gray}, stringstyle=\color{green}}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    escapeinside={(*@}{@*)} % Allows to include LaTeX code in listings
+}
+
 \title{Temas Selectos de Análisis Numérico\\Práctica 2, parte teórica}
 \author{Dra. Úrsula Iturrarán Viveros}
 \date{Semestre 2025-1}
@@ -401,5 +411,44 @@ donde \(f(t, y) = e^{-t^2}\).
 
 Aproximamos \(y(1)\) usando \(N = 10\) subintervalos.
 
+\begin{lstlisting}[basicstyle=\small\ttfamily, breaklines=true]
+    import numpy as np
+    
+    # Define the function f(t, y) = e^(-t^2)
+    def f(t, y):
+        return np.exp(-t**2)
+    
+    # Runge-Kutta method of order 4
+    def runge_kutta_4(f, y0, t0, t_end, N):
+        h = (t_end - t0) / N  # Step size
+        t_values = np.linspace(t0, t_end, N + 1)  # Time values
+        y_values = np.zeros(N + 1)  # Initialize y values
+        y_values[0] = y0  # Initial condition
+    
+        for n in range(N):
+            k1 = f(t_values[n], y_values[n])
+            k2 = f(t_values[n] + h / 2, y_values[n] + h / 2 * k1)
+            k3 = f(t_values[n] + h / 2, y_values[n] + h / 2 * k2)
+            k4 = f(t_values[n] + h, y_values[n] + h * k3)
+    
+            y_values[n + 1] = y_values[n] + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
+    
+        return y_values  # Return all y values
+    
+    # Parameters
+    y0 = 0  # Initial value y(0)
+    t0 = 0  # Start of interval
+    t_end = 1  # End of interval
+    N = 10  # Number of subintervals
+    
+    # Approximate y(1)
+    y_approx = runge_kutta_4(f, y0, t0, t_end, N)
+    y_approx
+    \end{lstlisting}
+    
 
+\[array([0.        , 0.09966771, 0.19736511, 0.29123799, 0.37965297,
+0.46128114, 0.53515366,\] \[0.60068579, 0.65766996, 0.70624159,
+0.74682418])\]
+cupa aproximación nos da como resultado: 0.7468241328124277, lo cual es una buena aproximación, ya que el valor exacto de la integral es $\frac{\sqrt{\pi}}{2}\text{erf}(1)\approx0.7468241328124270$.
 \end{document}
